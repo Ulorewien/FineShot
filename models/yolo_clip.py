@@ -2,7 +2,6 @@ import torch
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
 from ultralytics import YOLO
-import torchvision.transforms as transforms
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -19,10 +18,6 @@ def detect_objects_and_get_clip_embeddings(image_path):
     embeddings = []
     for result in results:
         xyxy = result.boxes.xyxy
-
-    transform = transforms.Compose([
-        transforms.PILToTensor()
-    ])
  
     for x1, y1, x2, y2 in xyxy:
         x1, y1, x2, y2 = x1.item(), y1.item(), x2.item(), y2.item()
@@ -34,7 +29,7 @@ def detect_objects_and_get_clip_embeddings(image_path):
 
     return torch.stack(embeddings, dim=0)
 
-image_path = "test2.jpeg"
+image_path = "test2.jpeg" # Change this to the path of your image
 object_embeddings = detect_objects_and_get_clip_embeddings(image_path).squeeze(1)
 print("CLIP embeddings:", object_embeddings)
 print("Embeddings shape:", object_embeddings.shape)
