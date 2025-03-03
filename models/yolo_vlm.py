@@ -3,16 +3,27 @@ import torch
 import base64
 from PIL import Image
 from ultralytics import YOLO
+from qwen_vl_utils import process_vision_info
+from transformers import BitsAndBytesConfig
 from transformers import CLIPProcessor, CLIPModel
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
-from qwen_vl_utils import process_vision_info
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 yolo_model = YOLO("yolo11n.pt").to(device)
 
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype="float16",
+    bnb_4bit_use_double_quant=True
+)
+
 qwen_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    "Qwen/Qwen2.5-VL-7B-Instruct", torch_dtype="auto", device_map="auto"
+    "Qwen/Qwen2.5-VL-7B-Instruct", 
+    torch_dtype="auto", 
+    device_map="auto", 
+    quantization_config=quantization_config
 ).to(device)
 qwen_processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct")
 
