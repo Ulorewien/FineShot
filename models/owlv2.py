@@ -1,7 +1,6 @@
 from PIL import Image
 import torch
 from transformers import Owlv2Processor, Owlv2ForObjectDetection
-from utils import render_image
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -10,7 +9,13 @@ owlv2_processor = Owlv2Processor.from_pretrained("google/owlv2-base-patch16-ense
 
 def owl_v2(image_path, class_labels, confidence_threshold=0.1):
     image = Image.open(image_path)
-    inputs = owlv2_processor(text=class_labels, images=image, return_tensors="pt").to(owlv2_model.device)
+    inputs = owlv2_processor(
+        text=class_labels, 
+        images=image, 
+        return_tensors="pt", 
+        padding=True, 
+        truncation=True
+    ).to(owlv2_model.device)
         
     with torch.no_grad():
         outputs = owlv2_model(**inputs)
@@ -26,6 +31,7 @@ def owl_v2(image_path, class_labels, confidence_threshold=0.1):
 
 
 if __name__ == "__main__":
+    from .utils import render_image
     class_labels = ["golden dog", "black cat"]
     detections = owl_v2("/data/yashowardhan/FineShot/test/imgs/dogs.jpeg", class_labels)
     print(detections)

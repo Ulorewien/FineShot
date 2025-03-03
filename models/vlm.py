@@ -2,20 +2,20 @@ import os
 from transformers import AutoProcessor, AutoModelForImageTextToText
 from transformers import BitsAndBytesConfig
 from qwen_vl_utils import process_vision_info
-from utils import render_image, fix_json
 import base64
 import json
-
-# quantization_config = BitsAndBytesConfig(
-#     load_in_4bit=True,
-#     bnb_4bit_quant_type="nf4",
-#     bnb_4bit_compute_dtype="float16",
-#     bnb_4bit_use_double_quant=True
-# )
+from .utils import fix_json
 
 quantization_config = BitsAndBytesConfig(
-    load_in_8bit=True
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype="float16",
+    bnb_4bit_use_double_quant=True
 )
+
+# quantization_config = BitsAndBytesConfig(
+#     load_in_8bit=True
+# )
 
 model = AutoModelForImageTextToText.from_pretrained(
     "Qwen/Qwen2.5-VL-7B-Instruct",
@@ -35,7 +35,7 @@ def encode_image(image_path: str) -> str:
 
 def qwen25_vl(image_path, class_labels):
     image = encode_image(image_path)
-    class_labels = ", ".join(class_labels)
+    class_labels = ",\n".join(class_labels)
     user_message = """
         You are an excellent object detection model who can detect any general object in the world.
         Given an image you need to find and retrun bounding box coordinates for the following labels if they are present in the image.
@@ -83,7 +83,7 @@ def qwen25_vl(image_path, class_labels):
     # Inference: Generation of the output
     generated_ids = model.generate(
         **inputs, 
-        max_new_tokens=256,
+        max_new_tokens=2048,
         temperature=0.1
     )
     generated_ids_trimmed = [
@@ -99,6 +99,8 @@ def qwen25_vl(image_path, class_labels):
     
 
 if __name__ == "__main__":
+    from .utils import render_image
+    
     image_path = "/data/yashowardhan/FineShot/test/imgs/dogs.jpeg"
     class_labels = ["golden dog", "white cat", "black horse", "gorrilla", "coin"]
     detections = qwen25_vl(image_path, class_labels)

@@ -1,6 +1,5 @@
 from ultralytics import YOLOWorld
 import torch
-from utils import render_image
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = YOLOWorld("yolov8l-worldv2.pt") 
@@ -15,12 +14,13 @@ def yoloworld(image_path, classes, confidence_threshold=0.2):
     for pred in predictions:
         pred = pred.cpu().numpy()
         result["boxes"] = pred.boxes.xyxy.tolist()
-        result["labels"] = pred.boxes.cls.tolist()
+        result["labels"] = [int(x) for x in pred.boxes.cls.tolist()]
         result["scores"] = pred.boxes.conf.tolist()
     
     return result
 
 if __name__ == "__main__":
+    from .utils import render_image
     classes = ["dog", "black cat"]
     image_path = "/data/yashowardhan/FineShot/test/imgs/dogs.jpeg"
     result = yoloworld(image_path, classes)
