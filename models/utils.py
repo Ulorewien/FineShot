@@ -72,6 +72,8 @@ def render_image(image, boxes, labels, classes, save_path=None):
     # print("class map", class_map)
 
     for box, label in zip(boxes, labels):
+        if label is None:
+            continue
         x1, y1, x2, y2 = box
         if isinstance(label, int):
             box_color = color_map[index_class_map[label]]
@@ -117,7 +119,7 @@ def compute_map(detections, annotations, iou_threshold=0.5):
         for a in ann:
             matched = False
             for d in det:
-                iou = compute_iou(d[:4], a)
+                iou = compute_iou(d, a)
                 if iou >= iou_threshold:
                     true_positive += 1
                     matched = True
@@ -156,3 +158,9 @@ def load_annotations(annotation_path):
                 new_annotations[image_id]["labels"].append(annotation["regions"][i]["phrase"])
                 
     return new_annotations
+
+
+def encode_patch(patch):
+    patch = np.asarray(patch)
+    _, buffer = cv2.imencode(".jpeg", patch)
+    return base64.b64encode(buffer).decode("utf-8")
