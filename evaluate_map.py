@@ -2,11 +2,11 @@ import os
 import json
 from models.utils import compute_map, load_image_paths, load_annotations
 
-refcoco_image_path = "/data/yashowardhan/FineShot/test/refcoco_images"
-refcoco_annotation_path = "/data/yashowardhan/FineShot/data/refcoco data/refcoco_updated.json"
+refcoco_image_path = "test/refcoco_images"
+refcoco_annotation_path = "data/refcoco data/refcoco_updated.json"
 
-vg_image_path = "/data/yashowardhan/FineShot/test/vg_images"
-vg_annotation_path = "/data/yashowardhan/FineShot/data/visual genome data/vg_subset.json"
+vg_image_path = "test/vg_images"
+vg_annotation_path = "data/visual genome data/vg_subset.json"
 
 # For testing change the index range according to model [0, 100] | [45, 55]
 model_configs = {
@@ -47,7 +47,7 @@ def run_eval(image_path, annotation_path, dataset="refcoco"):
                 file_ct = str(ct).replace(".", "")
                 for st in config["similarity_threshold"]:
                     file_st = str(st).replace(".", "")
-                    result_file_path = f"/data/yashowardhan/FineShot/test/results/{model}_{file_ct}_{file_st}_{dataset}_results.json"   
+                    result_file_path = f"test/results/{model}_{file_ct}_{file_st}_{dataset}_results.json"   
                     with open(result_file_path, "r") as f:
                         results = json.load(f)
                     
@@ -85,7 +85,7 @@ def run_eval(image_path, annotation_path, dataset="refcoco"):
         else:
             for ct in config["confidence_threshold"]:
                 file_ct = str(ct).replace(".", "")
-                result_file_path = f"/data/yashowardhan/FineShot/test/results/{model}_{file_ct}_{dataset}_results.json" 
+                result_file_path = f"test/results/{model}_{file_ct}_{dataset}_results.json" 
                 
                 with open(result_file_path, "r") as f:
                     results = json.load(f)
@@ -126,11 +126,11 @@ def run_eval(image_path, annotation_path, dataset="refcoco"):
 
 
 refcoco_map = run_eval(refcoco_image_path, refcoco_annotation_path, "refcoco")
-with open("/data/yashowardhan/FineShot/test/results/refcoco_map_results.json", "w") as f:
+with open("test/results/refcoco_map_results.json", "w") as f:
     json.dump(refcoco_map, f, indent=4)
 print("RefCOCO mAP results saved")
 
 vg_map = run_eval(vg_image_path, vg_annotation_path, "vg")
-with open("/data/yashowardhan/FineShot/test/results/vg_map_results.json", "w") as f:
+with open("test/results/vg_map_results.json", "w") as f:
     json.dump(vg_map, f, indent=4)
 print("VG mAP results saved")

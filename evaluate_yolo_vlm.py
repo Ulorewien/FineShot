@@ -6,11 +6,11 @@ from time import time
 import torch
 from tqdm import tqdm
 
-refcoco_image_path = "/data/yashowardhan/FineShot/test/refcoco_images"
-refcoco_annotation_path = "/data/yashowardhan/FineShot/data/refcoco data/refcoco_updated.json"
+refcoco_image_path = "test/refcoco_images"
+refcoco_annotation_path = "data/refcoco data/refcoco_updated.json"
 
-vg_image_path = "/data/yashowardhan/FineShot/test/vg_images"
-vg_annotation_path = "/data/yashowardhan/FineShot/data/visual genome data/vg_subset.json"
+vg_image_path = "test/vg_images"
+vg_annotation_path = "data/visual genome data/vg_subset.json"
 
 def inference(
         image_path, 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         print(f"Confidence threshold: {ct}")
         
         print("Dataset: RefCOCO")
-        refcoco_result_file = f"/data/yashowardhan/FineShot/test/results/yolo_vlm_{file_ct}_refcoco_results.json"
+        refcoco_result_file = f"test/results/yolo_vlm_{file_ct}_refcoco_results.json"
         if os.path.exists(refcoco_result_file):
             start = time()
             refcoco_results = inference(refcoco_image_path, refcoco_annotation_path, "refcoco", ct)
@@ -60,7 +60,7 @@ if __name__ == "__main__":
                 json.dump(refcoco_results, f, indent=4)
         
         print("Dataset: VG")
-        vg_result_file = f"/data/yashowardhan/FineShot/test/results/yolo_vlm_{file_ct}_vg_results.json"
+        vg_result_file = f"test/results/yolo_vlm_{file_ct}_vg_results.json"
         if os.path.exists(vg_result_file):
             start = time()
             vg_results = inference(vg_image_path, vg_annotation_path, "vg", ct)
