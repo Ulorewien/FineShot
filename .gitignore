@@ -1,4 +1,8 @@
 *.pt 
+test/refcoco_images
+test/refcoco_results
+test/vg_images
+test/vg_results
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
