@@ -8,7 +8,7 @@ model.eval()
 
 def yoloworld(image_path, classes, confidence_threshold=0.2):
     model.set_classes(classes)
-    predictions = model(image_path, conf=confidence_threshold)
+    predictions = model(image_path, conf=confidence_threshold, verbose=False)
     result = dict()
 
     for pred in predictions:

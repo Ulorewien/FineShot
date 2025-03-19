@@ -5,12 +5,12 @@ from ultralytics import YOLO
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-yolo_model = YOLO("yolo11n.pt").to(device)
+yolo_model = YOLO("yolo11l.pt").to(device)
 clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
 clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
 def yolo_clip(image_path, classes, confidence_threshold=0.5, similarity_threshold=0.5):
-    predictions = yolo_model(image_path, conf=confidence_threshold)
+    predictions = yolo_model(image_path, conf=confidence_threshold, verbose=False)
     result = {"boxes": [], "labels": [], "scores": []}
     image = Image.open(image_path)
     objects, embeddings = [], []
@@ -44,7 +44,7 @@ def yolo_clip(image_path, classes, confidence_threshold=0.5, similarity_threshol
     return result
 
 if __name__ == "__main__":
-    from models.utils import render_image
+    from utils import render_image
     
     classes = ["dog", "black cat"]
     image_path = "/data/yashowardhan/FineShot/test/imgs/dogs.jpeg"
