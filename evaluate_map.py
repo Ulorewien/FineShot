@@ -2,36 +2,36 @@ import os
 import json
 from models.utils import compute_map, load_image_paths, load_annotations
 
-
 refcoco_image_path = "/data/yashowardhan/FineShot/test/refcoco_images"
 refcoco_annotation_path = "/data/yashowardhan/FineShot/data/refcoco data/refcoco_updated.json"
 
 vg_image_path = "/data/yashowardhan/FineShot/test/vg_images"
 vg_annotation_path = "/data/yashowardhan/FineShot/data/visual genome data/vg_subset.json"
 
+# For testing change the index range according to model [0, 100] | [45, 55]
 model_configs = {
     "owlv2":{
         "confidence_threshold": [0.1, 0.5, 0.9],
-        "index": [0, 100]
+        "index": [0, 1000]
     },
     "yoloworld":{
         "confidence_threshold": [0.1, 0.5, 0.9],
-        "index": [0, 100]
+        "index": [0, 1000]
     },
     "yolo_clip":{
         "confidence_threshold": [0.1, 0.5, 0.9],
         "similarity_threshold": [0.25, 0.5, 0.75],
-        "index": [0, 100]
+        "index": [0, 1000]
     },
     "yolo_vlm":{
         "confidence_threshold": [0.1, 0.5, 0.9],
-        "index": [45, 55]
+        "index": [0, 1000]
     },
-    # "yolo_clip_vlm":{
-    #     "confidence_threshold": [0.1, 0.5, 0.9],
-    #     "similarity_threshold": [0.25, 0.5, 0.75],
-    #     "index": [45, 55]
-    # }
+    "yolo_clip_vlm":{
+        "confidence_threshold": [0.1, 0.5, 0.9],
+        "similarity_threshold": [0.25, 0.5, 0.75],
+        "index": [0, 1000]
+    }
 }
 
 def run_eval(image_path, annotation_path, dataset="refcoco"):
