@@ -1,6 +1,8 @@
 from models.vlm import qwen25_vl
 from models.utils import *
 import json
+import os
+from time import time
 import torch
 from tqdm import tqdm
 
@@ -10,9 +12,10 @@ refcoco_annotation_path = "/data/yashowardhan/FineShot/data/refcoco data/refcoco
 vg_image_path = "/data/yashowardhan/FineShot/test/vg_images"
 vg_annotation_path = "/data/yashowardhan/FineShot/data/visual genome data/vg_subset.json"
 
-def inference(image_path, annotation_path, dataset="refcoco"):
+def inference(image_path, annotation_path, dataset="refcoco", test=False):
     image_paths = load_image_paths(image_path)
-    image_paths = image_paths[:5]
+    if test:
+        image_paths = image_paths[45:55]
     annotations = load_annotations(annotation_path)
     
     results = {}
@@ -28,11 +31,19 @@ def inference(image_path, annotation_path, dataset="refcoco"):
 
 
 if __name__ == "__main__":
-    # refcoco_results = inference(refcoco_image_path, refcoco_annotation_path, "refcoco")
-    # with open("/data/yashowardhan/FineShot/test/results/vlm_refcoco_results.json", "w") as f:
-    #     json.dump(refcoco_results, f, indent=4)
+    print("Dataset: RefCOCO")
+    start = time()
+    refcoco_results = inference(refcoco_image_path, refcoco_annotation_path, "refcoco")
+    end = time()
+    print(f"Inference Time: {end-start} sec")
+    with open("/data/yashowardhan/FineShot/test/results/vlm_refcoco_results.json", "w") as f:
+        json.dump(refcoco_results, f, indent=4)
     
+    print("Dataset: VG")
+    start = time()
     vg_results = inference(vg_image_path, vg_annotation_path, "vg")
+    end = time()
+    print(f"Inference Time: {end-start} sec")
     with open("/data/yashowardhan/FineShot/test/results/vlm_vg_results.json", "w") as f:
         json.dump(vg_results, f, indent=4)
         
